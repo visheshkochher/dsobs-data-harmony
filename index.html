@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>One clear record for every Dosco: rebuilding the DSOBS register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Palette and type live here. To match the Society's exact brand, change only these tokens. */
+:root {
+  --paper: #f6f7f9;
+  --card: #ffffff;
+  --sunk: #edf0f4;
+  --ink: #14284a;          /* society navy */
+  --ink-soft: #46587a;
+  --ink-faint: #6d7a93;
+  --rule: #d8dee8;
+  --green: #2f6b4f;        /* Chandbagh green */
+  --brass: #a8812f;
+  --flag: #b4442f;
+  --code: #2b6f87;
+  --house-t: #c28e2b; --house-h: #3e7cb1; --house-j: #b5523b; --house-k: #4e8a57; --house-o: #7e5aa6;
+  --serif: "Libre Caslon Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: "Lato", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1a2e; --card: #16233b; --sunk: #0b1424; --ink: #e9ecf2; --ink-soft: #b5c0d4; --ink-faint: #8391ab;
+    --rule: #2a3a57; --green: #6fb08e; --brass: #d3ac5b; --flag: #e57a64; --code: #7cc0d6;
+    --house-t: #e0b04f; --house-h: #7fb2de; --house-j: #e08467; --house-k: #8cc493; --house-o: #b89ad8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1a2e; --card: #16233b; --sunk: #0b1424; --ink: #e9ecf2; --ink-soft: #b5c0d4; --ink-faint: #8391ab;
+  --rule: #2a3a57; --green: #6fb08e; --brass: #d3ac5b; --flag: #e57a64; --code: #7cc0d6;
+  --house-t: #e0b04f; --house-h: #7fb2de; --house-j: #e08467; --house-k: #8cc493; --house-o: #b89ad8;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 1.0625rem; line-height: 1.65; }
+a { color: var(--green); text-underline-offset: 0.18em; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 2px; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; color: var(--ink); margin: 0; }
+h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1.06; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); line-height: 1.15; margin-bottom: 1rem; }
+h3 { font-size: 1.25rem; line-height: 1.3; margin: 0 0 0.4rem; }
+p { margin: 0 0 1rem; max-width: 38rem; }
+.lede { font-family: var(--serif); font-size: clamp(1.15rem, 2vw, 1.35rem); line-height: 1.55; color: var(--ink-soft); }
+.quiet { color: var(--ink-faint); font-size: 0.9rem; }
+code, .code { font-family: var(--mono); font-size: 0.86em; color: var(--code); }
+
+.wrap { max-width: 72rem; margin: 0 auto; padding: 0 clamp(1.15rem, 4vw, 2.5rem); }
+.topbar { border-bottom: 1px solid var(--rule); }
+.topbar .wrap { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-top: 1rem; padding-bottom: 0.9rem; flex-wrap: wrap; }
+.society { font-family: var(--serif); font-variant: small-caps; letter-spacing: 0.04em; font-size: 1.02rem; }
+.byline { font-size: 0.86rem; color: var(--ink-faint); }
+
+section { padding: clamp(3.5rem, 8vw, 6.5rem) 0; }
+section + section { border-top: 1px solid var(--rule); }
+.motto { font-family: var(--serif); font-style: italic; color: var(--brass); margin-bottom: 1.1rem; font-size: 1.05rem; }
+
+/* text beside its picture on wide screens; picture right under the heading on phones */
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+.pair.flip > .visual { order: -1; }
+.visual { position: relative; }
+.gl-figure { position: relative; width: 100%; aspect-ratio: 5 / 4; border-radius: 10px; background: var(--card); border: 1px solid var(--rule); touch-action: pan-y; }
+.gl-figure.tall { aspect-ratio: 1 / 1; }
+.figcap { font-size: 0.86rem; color: var(--ink-faint); margin-top: 0.6rem; }
+.fig-legend, .tooltip, .replay { z-index: 3; }
+.fig-legend { position: absolute; left: 0.8rem; right: 0.8rem; top: 0.65rem; display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; font-size: 0.78rem; color: var(--ink-soft); pointer-events: none; }
+.fig-legend i { width: 0.6rem; height: 0.6rem; border-radius: 50%; display: inline-block; margin-right: 0.35rem; vertical-align: -0.02rem; }
+.replay {
+  position: absolute; right: 0.7rem; bottom: 0.7rem; font: inherit; font-size: 0.8rem; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.8rem; cursor: pointer;
+}
+.tooltip {
+  position: absolute; pointer-events: none; z-index: 3; background: var(--card); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 0.5rem 0.65rem; font-size: 0.8rem; line-height: 1.45; color: var(--ink);
+  max-width: 15rem; opacity: 0; transition: opacity 120ms; box-shadow: 0 6px 20px rgba(10, 20, 40, 0.12);
+}
+
+/* hero */
+.hero { padding-top: clamp(2.5rem, 7vw, 5.5rem); }
+.hero h1 { margin-bottom: 1.3rem; max-width: 13ch; }
+
+/* a messy row, written out */
+.row-card { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem 1.1rem; font-size: 0.9rem; }
+.row-card .cells { display: grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.9rem; }
+.row-card .h { color: var(--ink-faint); }
+.row-card .v { font-family: var(--mono); font-size: 0.84rem; overflow-wrap: anywhere; }
+.row-card .v.wrong { color: var(--flag); }
+.row-card .note { margin: 0.7rem 0 0; font-size: 0.82rem; color: var(--ink-faint); }
+
+/* before / after */
+.compare { width: 100%; border-collapse: collapse; margin-top: 1.4rem; }
+.compare th { text-align: left; font-family: var(--serif); font-weight: 400; font-size: 1.05rem; padding: 0 1rem 0.6rem 0; border-bottom: 1px solid var(--ink); }
+.compare td { padding: 0.85rem 1rem 0.85rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; font-size: 0.95rem; }
+.compare td:first-child { font-family: var(--serif); white-space: nowrap; color: var(--ink); }
+.compare td:nth-child(2) { color: var(--ink-faint); }
+.compare td:nth-child(3) { color: var(--ink); }
+
+/* privacy */
+.demo { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 1rem 1.1rem 1.1rem; font-size: 0.9rem; }
+.demo label { display: block; font-weight: 700; font-size: 0.82rem; color: var(--ink-soft); margin: 0.3rem 0 0.35rem; }
+.demo textarea, .demo input {
+  width: 100%; font-family: var(--mono); font-size: 0.84rem; line-height: 1.5; background: var(--sunk); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 0.55rem 0.65rem; resize: vertical;
+}
+.demo .out { margin-top: 0.8rem; font-family: var(--mono); font-size: 0.84rem; line-height: 1.6; background: var(--sunk); border-radius: 6px; padding: 0.6rem 0.7rem; overflow-wrap: anywhere; min-height: 3.2rem; }
+.out .tok { color: var(--code); } .out .tok.p { color: var(--brass); } .out .tok.e { color: var(--house-o); }
+.demo .note { margin: 0.6rem 0 0; color: var(--ink-faint); font-size: 0.8rem; }
+.contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.4rem 0 0; }
+.contrast div { border-top: 3px solid var(--rule); padding-top: 0.7rem; font-size: 0.93rem; }
+.contrast div.ours { border-top-color: var(--green); }
+.contrast strong { display: block; font-family: var(--serif); font-weight: 400; font-size: 1.08rem; margin-bottom: 0.25rem; }
+
+/* the five steps (a real sequence, so they are numbered) */
+.steps { list-style: none; margin: 2rem 0 0; padding: 0; counter-reset: s; }
+.steps > li { counter-increment: s; display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 0 1rem; padding: 1.8rem 0; border-top: 1px solid var(--rule); }
+.steps > li::before { content: counter(s); font-family: var(--serif); font-size: 2rem; line-height: 1; color: var(--brass); }
+.steps .inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem 3rem; align-items: start; }
+.steps .inner.single { grid-template-columns: minmax(0, 1fr); }
+.pairs { display: grid; gap: 0.55rem; font-size: 0.88rem; }
+.pairs div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: baseline; background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 0.5rem 0.7rem; }
+.pairs .from { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); overflow-wrap: anywhere; }
+.pairs .arrow { color: var(--brass); }
+.pairs .to { font-family: var(--mono); font-size: 0.8rem; color: var(--ink); overflow-wrap: anywhere; }
+
+/* network */
+.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.2rem 0 0.5rem; }
+.controls button { font: inherit; font-size: 0.86rem; padding: 0.42rem 0.9rem; border-radius: 999px; cursor: pointer; background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+.controls button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.uses { margin: 1.4rem 0 0; padding: 0; list-style: none; display: grid; gap: 0.9rem; }
+.uses li { padding-left: 1rem; border-left: 2px solid var(--green); }
+.uses strong { font-family: var(--serif); font-weight: 400; font-size: 1.08rem; display: block; }
+
+/* under the hood */
+.hood { background: var(--sunk); }
+.hood-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem 2rem; margin-top: 2rem; }
+.hood-grid div { border-top: 1px solid var(--ink); padding-top: 0.8rem; font-size: 0.93rem; }
+.hood-grid h3 { font-size: 1.12rem; }
+.bars { margin: 2.5rem 0 0.5rem; max-width: 40rem; font-size: 0.88rem; }
+.bars h3 { margin-bottom: 0.8rem; }
+.bar { display: grid; grid-template-columns: 11rem 1fr 3.2rem; align-items: center; gap: 0.7rem; margin-bottom: 0.55rem; }
+.bar .track { height: 0.7rem; background: var(--card); border-radius: 3px; overflow: hidden; }
+.bar .fill { display: block; height: 100%; width: 0; background: var(--green); border-radius: 3px; transition: width 900ms cubic-bezier(.2,.7,.2,1); }
+.bar .pct { text-align: right; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.lanes { margin: 1.4rem 0 0; font-size: 0.86rem; }
+.lane { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.35rem; }
+.lane span { padding: 0.35rem 0.6rem; border-radius: 6px; }
+.lane .l:not(:empty) { background: color-mix(in srgb, var(--green) 15%, transparent); }
+.lane .c:not(:empty) { background: color-mix(in srgb, var(--house-h) 16%, transparent); }
+.lane.head span { font-weight: 700; padding-top: 0; padding-bottom: 0.2rem; }
+.lane.head .l { color: var(--green); background: none; } .lane.head .c { color: var(--house-h); background: none; }
+.cross { font-size: 0.78rem; color: var(--ink-faint); margin: 0.1rem 0 0.4rem 0.6rem; }
+
+/* deliverables */
+.keep { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: 1.8rem; }
+.keep div { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 1.1rem 1.15rem; font-size: 0.93rem; }
+.keep div:first-child { grid-column: span 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 0.5rem 2rem; border-color: var(--green); }
+
+footer { border-top: 1px solid var(--rule); padding: 2.5rem 0 3rem; font-size: 0.86rem; color: var(--ink-faint); }
+footer p { max-width: 46rem; }
+
+/* one shared WebGL canvas draws inside each figure's box */
+#gl { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 2; }
+
+@media (max-width: 860px) {
+  .pair { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+  .pair.flip > .visual { order: 1; }
+  .steps > li { grid-template-columns: 2.2rem minmax(0, 1fr); }
+  .steps .inner { grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
+  .hood-grid { grid-template-columns: minmax(0, 1fr); }
+  .keep { grid-template-columns: minmax(0, 1fr); }
+  .keep div:first-child { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
+  .contrast { grid-template-columns: minmax(0, 1fr); }
+  .compare td:first-child { white-space: normal; }
+  .bar { grid-template-columns: 8.5rem 1fr 2.8rem; }
+  .gl-figure { aspect-ratio: 4 / 3; }
+  .gl-figure.tall { aspect-ratio: 4 / 4.2; }
+}
+@media (max-width: 560px) {
+  .compare, .compare tbody, .compare tr, .compare td { display: block; }
+  .compare thead { display: none; }
+  .compare tr { padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
+  .compare td { border: 0; padding: 0.1rem 0; }
+  .compare td:nth-child(2)::before { content: "Before: "; color: var(--ink-faint); }
+  .compare td:nth-child(3)::before { content: "Now: "; color: var(--green); font-weight: 700; }
+}
+@media (prefers-reduced-motion: reduce) { .bar .fill { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="society">The Doon School Old Boys' Society</span>
+    <span class="byline">A data project: cleaning and harmonising the member register</span>
+  </div>
+</header>
+
+<main>
+  <!-- ---------------------------------------------------------------- hero -->
+  <section class="hero">
+    <div class="wrap pair">
+      <div>
+        <p class="motto">An aristocracy of service begins with knowing who we are.</p>
+        <h1>One clear record for every Dosco</h1>
+        <p class="lede">Since John Martyn's first Dosco Register, the Society's records have been kept by many hands. This project turns close to 9,000 tangled rows into one trustworthy record for each of roughly 6,000 Old Boys, using reasoning models that never see a real name.</p>
+      </div>
+      <div class="visual">
+        <div class="gl-figure" id="fig-hero" role="img" aria-label="A grid of register cells; misplaced cells glide back into their correct columns"></div>
+        <p class="figcap">Values that drifted into the wrong columns find their way home.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- the register today -->
+  <section>
+    <div class="wrap pair flip">
+      <div class="visual">
+        <div class="row-card" aria-label="An invented example of a messy register row">
+          <div class="cells">
+            <span class="h">Surname</span><span class="v"></span>
+            <span class="h">First name</span><span class="v wrong">Mehra</span>
+            <span class="h">Middle name</span><span class="v wrong">Arjun</span>
+            <span class="h">Batch</span><span class="v">1979</span>
+            <span class="h">Date of birth</span><span class="v wrong">12 Rajpur Road, Dehradun 248001</span>
+            <span class="h">Address</span><span class="v wrong">3/14/1961</span>
+            <span class="h">Mobile 2</span><span class="v">0135-262-4410, 262-4411</span>
+            <span class="h">Interests</span><span class="v wrong">Father V.K. Mehra (212 K-1951)</span>
+          </div>
+          <p class="note">An invented row, shifted one column to the right, as many real ones are. Every person on this page is made up.</p>
+        </div>
+      </div>
+      <div>
+        <h2>The register as it stands</h2>
+        <p>The same Old Boy appears several times, in capitals in an old record and again in a newer form, with each version disagreeing a little. Values sit in the wrong columns: a date of birth in the address, a father's name among hobbies. Phone numbers are written five ways and dates three ways.</p>
+        <p>It is the kind of mess that looks as if it needs months of manual entry. It doesn't. And until it is fixed, simple questions go unanswered, such as which Old Boys in Singapore have offered to mentor, or where this year's Rose Bowl should be posted.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- what changes -->
+  <section>
+    <div class="wrap">
+      <h2>What the Society gets</h2>
+      <p class="lede">A register that can be searched, trusted and built upon, ready to move into the Society's app.</p>
+      <table class="compare">
+        <thead><tr><th></th><th>Before</th><th>Now</th></tr></thead>
+        <tbody>
+          <tr><td>Each Old Boy</td><td>Several rows that disagree</td><td>One record, with the older versions kept for reference</td></tr>
+          <tr><td>Phone numbers</td><td>Written in every format, with or without codes</td><td>One format, with the country code in its own field</td></tr>
+          <tr><td>Addresses</td><td>Misspelt cities, wrong states, missing towns</td><td>Standard cities, states and countries across 49 countries; missing cities filled from PIN codes</td></tr>
+          <tr><td>Dates</td><td>Three conventions mixed together</td><td>One format, with impossible dates caught</td></tr>
+          <tr><td>Relatives</td><td>A sentence typed into one cell</td><td>Linked entries with name, school number, House and batch</td></tr>
+          <tr><td>Careers and degrees</td><td>Free text spread across columns</td><td>Structured roles and qualifications that can be searched</td></tr>
+          <tr><td>The Rose Bowl</td><td>Preference buried in comments</td><td>A clear choice of print or digital</td></tr>
+          <tr><td>Doubtful records</td><td>Quietly wrong</td><td>Set aside for a named reviewer, with a suggested answer</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- privacy -->
+  <section>
+    <div class="wrap pair">
+      <div>
+        <h2>Privacy, by design</h2>
+        <p>This is personal information belonging to thousands of Old Boys, and the method is built around that.</p>
+        <p>Before any model reads a row, every name, street, company, phone number and email is replaced on one laptop with a code made from a passphrase only the custodian knows. Reasoning models do the reading and placing on coded rows, and the results are decoded back on the same laptop. Dates, cities, school numbers and Houses stay readable, so the model can still make sense of the row.</p>
+        <div class="contrast">
+          <div><strong>Manual data entry</strong>Two hired operators with full sight of every member's name, address and phone number, for a month, on machines the Society doesn't control.</div>
+          <div class="ours"><strong>This approach</strong>One custodian on one machine, under a written undertaking. The cloud sees codes only, and the working data is deleted on completion.</div>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="demo" id="coder">
+          <label for="coder-in">Type an invented row and watch it get coded</label>
+          <textarea id="coder-in" rows="3" spellcheck="false">Dr. Arjun Mehra, 12 Rajpur Road, Dehradun 248001, 98100 12345, arjun.mehra@example.com, son of V.K. Mehra (212 K-1951)</textarea>
+          <label for="coder-key">Passphrase</label>
+          <input id="coder-key" type="text" value="valley of the doon" spellcheck="false" autocomplete="off">
+          <div class="out" id="coder-out" aria-live="polite"></div>
+          <p class="note">The same surname gets the same code everywhere, so the model can still tell that two rows belong to one family. Change the passphrase and every code changes. This runs in your browser; nothing you type leaves it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- the five steps -->
+  <section>
+    <div class="wrap">
+      <h2>How the register is rebuilt</h2>
+      <p class="lede">Five steps, from a tangled sheet to records the Society can rely on.</p>
+      <ol class="steps">
+        <li><div class="inner single"><div>
+          <h3>Understand what is there</h3>
+          <p>Every column is read for what it actually holds against what it claims to hold, and how often values have wandered. The Society gets a factual picture of its own records, which it has never had.</p>
+        </div></div></li>
+        <li><div class="inner">
+          <div>
+            <h3>Put every value in its place</h3>
+            <p>A reasoning model reads each coded row the way a sharp-memoried Old Boy would. It recognises that a value sitting under "batch" is really a House, that a cell of digits is a phone number, or that a note in the margin says the whole row has slipped one column. Code then checks that whatever it placed really exists in that row.</p>
+          </div>
+          <div class="pairs" aria-label="Examples of values moved to the right field">
+            <div><span class="from">Interests: "Father V.K. Mehra (212 K-1951)"</span><span class="arrow">to</span><span class="to">a relative, House K, batch 1951</span></div>
+            <div><span class="from">Address: "3/14/1961"</span><span class="arrow">to</span><span class="to">date of birth</span></div>
+          </div>
+        </div></li>
+        <li><div class="inner">
+          <div>
+            <h3>One standard for everything</h3>
+            <p>Where the Society's own notes give a rule, plain code applies it the same way every time. Dates follow the dots-and-slashes convention the data owners described. Places are checked against every state and country in the register. Phone numbers keep their country code in a separate field.</p>
+          </div>
+          <div class="pairs" aria-label="Examples of standardisation">
+            <div><span class="from">31.10.1992 and 10/31/1992</span><span class="arrow">to</span><span class="to">1992-10-31</span></div>
+            <div><span class="from">Bangalore, Kerala</span><span class="arrow">to</span><span class="to">Bangalore, Karnataka</span></div>
+            <div><span class="from">PIN 226016, no city</span><span class="arrow">to</span><span class="to">Lucknow, Uttar Pradesh</span></div>
+            <div><span class="from">0135-262-4410, 262-4411</span><span class="arrow">to</span><span class="to">+91 1352624410, +91 1352624411</span></div>
+          </div>
+        </div></li>
+        <li><div class="inner">
+          <div>
+            <h3>Many rows, one Old Boy</h3>
+            <p>Rows that belong to the same person are brought together: same school number and surname, or the same name with a shared email or phone. Brothers who share a House and batch stay apart. The newest information wins, older rows fill the gaps, and nothing is thrown away.</p>
+            <p>When rows disagree on something that matters, such as a batch, both values are kept side by side with the evidence, for a person to decide.</p>
+          </div>
+          <div class="visual">
+            <div class="gl-figure" id="fig-merge" role="img" aria-label="Rows of a register collapse into individual people">
+              <div class="fig-legend" id="merge-legend"></div>
+              <button type="button" class="replay" id="replay-merge">Play again</button>
+            </div>
+          </div>
+        </div></li>
+        <li><div class="inner single"><div>
+          <h3>When in doubt, ask a person</h3>
+          <p>Records the pipeline cannot settle with confidence are never guessed at. They go into a review file with the suggested value alongside, for someone nominated by the Society to decide. Only genuine disagreements reach that file: rows giving different batches, a death recorded without evidence, two rows that may or may not be the same man. Editorial control stays with DSOBS.</p>
+        </div></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- possibilities -->
+  <section>
+    <div class="wrap pair">
+      <div>
+        <h2>What a living register makes possible</h2>
+        <p>Once relatives carry a school number, House and batch, the register stops being a list and becomes a network of fathers and sons, brothers and cousins. Each record also carries a career, a city and a willingness to help.</p>
+        <div class="controls" role="group" aria-label="Network view">
+          <button type="button" data-color="house" aria-pressed="true">Houses</button>
+          <button type="button" data-color="decade" aria-pressed="false">Generations</button>
+          <button type="button" data-color="mentor" aria-pressed="false">Mentors</button>
+          <button type="button" id="toggle-links" aria-pressed="true">Family links</button>
+        </div>
+        <ul class="uses">
+          <li><strong>Mentorship</strong>Match a recent leaver with an Old Boy in his field and city who has offered to help.</li>
+          <li><strong>Regional chapters</strong>See where Doscos live, from Dehradun to Toronto, and reach those no chapter has met.</li>
+          <li><strong>Family legacies</strong>Trace three generations through the same House for Founder's Day.</li>
+          <li><strong>The Rose Bowl</strong>Send each member the copy he chose, to an address the register now trusts.</li>
+        </ul>
+      </div>
+      <div class="visual">
+        <div class="gl-figure tall" id="fig-network" role="img" aria-label="A network of invented Old Boys linked by family ties">
+          <div class="fig-legend" id="network-legend"></div>
+          <div class="tooltip" id="tooltip"></div>
+        </div>
+        <p class="figcap">Invented Old Boys. Hover or tap a dot.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- under the hood -->
+  <section class="hood">
+    <div class="wrap">
+      <h2>Under the hood</h2>
+      <p class="lede">For the technically curious: what makes the pipeline safe, accurate and cheap to run.</p>
+
+      <div class="lanes" aria-label="Which steps run on the laptop and which in the cloud">
+        <div class="lane head"><span class="l">On the custodian's laptop</span><span class="c">In the cloud</span></div>
+        <div class="lane"><span class="l">Code the register with a passphrase</span><span class="c"></span></div>
+        <div class="cross">only coded rows ever cross this line</div>
+        <div class="lane"><span class="l"></span><span class="c">Reasoning model reads coded rows</span></div>
+        <div class="lane"><span class="l">Rules, checks, grouping, merging</span><span class="c"></span></div>
+        <div class="lane"><span class="l"></span><span class="c">Second reading of whole records</span></div>
+        <div class="lane"><span class="l">Review triage, then decode</span><span class="c"></span></div>
+      </div>
+
+      <div class="hood-grid">
+        <div>
+          <h3>Keyed pseudonymisation</h3>
+          <p>Codes are HMAC-SHA256 digests under a key derived with scrypt from the custodian's passphrase. The code book is a vault encrypted with that passphrase. The pipeline refuses to send any file that still holds an email or a long number in clear.</p>
+        </div>
+        <div>
+          <h3>Reasoning models, held to account</h3>
+          <p>Models answer in a fixed structure, so a field can never hold a stray explanation. Every value they report is checked against its source row, and anything invented is rejected and asked again.</p>
+        </div>
+        <div>
+          <h3>Rules where rules exist</h3>
+          <p>Dates, school terms, House codes, Rose Bowl choices and phone formats follow fixed rules in code, so results are identical on every run. A place engine covers 49 countries and learns each PIN code's city from the register itself.</p>
+        </div>
+        <div>
+          <h3>A second reading</h3>
+          <p>Records with loose ends are read again with all of that person's rows at once. Fixes are accepted only if every word comes from his own rows, and never touch identity fields such as school number, batch, House or date of birth.</p>
+        </div>
+        <div>
+          <h3>Triage, not noise</h3>
+          <p>An editable policy decides what reaches a human. Disagreements the code can prove go to review. The model's own remarks and natural vagueness in job titles stay as notes.</p>
+        </div>
+        <div>
+          <h3>Stop, resume, re-run</h3>
+          <p>Every answer is stored locally, so a rerun costs nothing and an interrupted run carries on. The register is processed in ranges with a prompt before each, and the ranges are stitched back together with duplicates removed.</p>
+        </div>
+      </div>
+
+      <div class="bars" id="bars">
+        <h3>Prompt caching and batch processing</h3>
+        <p class="quiet">The shared instructions in every request, about 5,000 tokens, are cached at a tenth of the price. Requests are sent together at half price.</p>
+        <div class="bar"><span>No savings</span><span class="track"><span class="fill" data-w="100"></span></span><span class="pct">100%</span></div>
+        <div class="bar"><span>Instructions cached</span><span class="track"><span class="fill" data-w="79"></span></span><span class="pct">79%</span></div>
+        <div class="bar"><span>Shorter answers too</span><span class="track"><span class="fill" data-w="44"></span></span><span class="pct">~44%</span></div>
+        <div class="bar"><span>Sent as a batch</span><span class="track"><span class="fill" data-w="22"></span></span><span class="pct">~22%</span></div>
+        <p class="quiet">Relative cost of one request, from token counts measured on a four-row request. The shorter-answers figure is an estimate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- yours to keep -->
+  <section>
+    <div class="wrap">
+      <h2>Built to be run again</h2>
+      <p class="lede">Two operators would produce a clean file once. A pipeline can be re-run on the next export, on every new "update your record" submission, or on any future migration. The Society owns it.</p>
+      <div class="keep">
+        <div>
+          <h3>The clean register</h3>
+          <p>One record per Old Boy in the agreed schema, ready to move into the Society's app, with a full account of where every value came from.</p>
+        </div>
+        <div><h3>The review file</h3><p>Only the records that need a human, each with a suggested value.</p></div>
+        <div><h3>The pipeline</h3><p>Every script, documented, so the Society never depends on one person to use it again.</p></div>
+        <div><h3>Less to manage</h3><p>No freelancers to find, vet, brief and supervise, so committee time goes into the Society rather than into data entry.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Every person, number and record on this page is invented. No member data is used anywhere on it.</p>
+    <p>Designed and built by Vishesh Kochher.</p>
+  </div>
+</footer>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ================================================================ the coder demo */
+  const KEEP = new Set(("MR MRS DR COL LT GEN MAJ BRIG CAPT CDR PROF SHRI SMT RETD LATE FATHER MOTHER BROTHER SON " +
+    "OF DAUGHTER WIFE UNCLE NEPHEW GRANDFATHER COUSIN ROAD RD MARG STREET LANE AVENUE SECTOR COLONY NAGAR VIHAR " +
+    "ENCLAVE PARK FLAT FLOOR HOUSE BLOCK PHASE NEAR OPP CANTT DEHRADUN DEHRA DUN DELHI NEW MUMBAI KOLKATA CHENNAI " +
+    "BANGALORE LUCKNOW AGRA PUNE JAIPUR GURGAON NOIDA INDIA UTTARAKHAND HARYANA PUNJAB LONDON SINGAPORE TORONTO " +
+    "USA UK AND THE IN AT TO FOR BY SCHOOL COLLEGE UNIVERSITY HOSPITAL LTD PVT YES NO DECEASED ACTIVE BATCH").split(" "));
+  const B32 = "abcdefghijklmnopqrstuvwxyz234567";
+  const enc = new TextEncoder();
+  let keyPromise = null, keyFor = null;
+  function getKey(pass) {
+    if (keyFor !== pass) {
+      keyFor = pass;
+      keyPromise = crypto.subtle.digest("SHA-256", enc.encode(pass)).then((raw) =>
+        crypto.subtle.importKey("raw", raw, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]));
+    }
+    return keyPromise;
+  }
+  async function code(key, kind, value) {
+    const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(kind + "|" + value)));
+    let bits = 0, acc = 0, out = "";
+    for (const b of sig) {
+      acc = ((acc << 8) | b) & 0xffff; bits += 8;
+      while (bits >= 5 && out.length < 8) { out += B32[(acc >>> (bits - 5)) & 31]; bits -= 5; }
+      if (out.length >= 8) break;
+    }
+    return kind + "_" + out;
+  }
+  function phoneKind(raw) {
+    const d = raw.replace(/\D/g, "");
+    if (raw.trim().startsWith("+")) return ["+" + d, /^91[6-9]/.test(d) ? "PM" : d.startsWith("91") ? "PL" : "PF"];
+    if (d.length === 10 && /^[6-9]/.test(d)) return ["+91" + d, "PM"];
+    if (d.length === 11 && d[0] === "0") return ["+91" + d.slice(1), "PL"];
+    return [d, "PX"];
+  }
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  async function runCoder() {
+    const input = document.getElementById("coder-in").value;
+    const pass = document.getElementById("coder-key").value || " ";
+    const out = document.getElementById("coder-out");
+    if (!(window.crypto && crypto.subtle)) { out.textContent = "This browser can't run the demo."; return; }
+    const key = await getKey(pass);
+    const pieces = [], taken = [];
+    const free = (s, e) => taken.every(([a, b]) => e <= a || s >= b);
+    const put = (s, e, html) => { pieces.push([s, e, html]); taken.push([s, e]); };
+    for (const m of input.matchAll(/[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g))
+      put(m.index, m.index + m[0].length, `<span class="tok e">${await code(key, "E", m[0].toLowerCase())}</span>`);
+    for (const m of input.matchAll(/(?<!\w)\+?\(?\d[\d\s().-]{4,}\d(?!\w)/g)) {
+      const s = m.index, e = s + m[0].length;
+      if (!free(s, e) || /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/.test(m[0].trim()) || m[0].replace(/\D/g, "").length < 7) continue;
+      const [num, kind] = phoneKind(m[0]);
+      put(s, e, `<span class="tok p">${await code(key, kind, num)}</span>`);
+    }
+    for (const m of input.matchAll(/[A-Za-z]+(?:'[A-Za-z]+)?/g)) {
+      const w = m[0], s = m.index, e = s + w.length;
+      if (!free(s, e) || w.length === 1 || KEEP.has(w.toUpperCase())) continue;
+      put(s, e, `<span class="tok">${await code(key, "N", w.toUpperCase())}</span>`);
+    }
+    pieces.sort((a, b) => a[0] - b[0]);
+    let html = "", last = 0;
+    for (const [s, e, h] of pieces) { html += esc(input.slice(last, s)) + h; last = e; }
+    out.innerHTML = html + esc(input.slice(last));
+  }
+  let coderTimer;
+  ["coder-in", "coder-key"].forEach((id) => document.getElementById(id).addEventListener("input", () => {
+    clearTimeout(coderTimer); coderTimer = setTimeout(runCoder, 120);
+  }));
+  runCoder();
+
+  /* ================================================================ cost bars */
+  const bars = document.getElementById("bars");
+  new IntersectionObserver((entries, obs) => {
+    if (entries.some((e) => e.isIntersecting)) { bars.querySelectorAll(".fill").forEach((f) => { f.style.width = f.dataset.w + "%"; }); obs.disconnect(); }
+  }, { threshold: 0.35 }).observe(bars);
+
+  /* ================================================================ WebGL figures */
+  if (typeof THREE === "undefined") return;
+  const canvas = document.getElementById("gl");
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); }
+  catch (err) { return; }
+  renderer.setClearColor(0x000000, 0);
+  renderer.setScissorTest(true);
+  const PX = Math.min(window.devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(PX);
+
+  // seeded random so every visitor sees the same invented register
+  let seed = 1935;
+  const rand = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const pick = (a) => a[Math.floor(rand() * a.length)];
+
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    const col = (n) => new THREE.Color(cs.getPropertyValue(n).trim() || "#888");
+    C = { ink: col("--ink"), soft: col("--ink-soft"), faint: col("--ink-faint"), rule: col("--rule"), green: col("--green"),
+      brass: col("--brass"), flag: col("--flag"), code: col("--code"), card: col("--card"),
+      house: { T: col("--house-t"), H: col("--house-h"), J: col("--house-j"), K: col("--house-k"), O: col("--house-o") } };
+  }
+  readColors();
+
+  function dotTexture() {
+    const c = document.createElement("canvas"); c.width = c.height = 64;
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.beginPath(); g.arc(32, 32, 28, 0, Math.PI * 2); g.fill();
+    return new THREE.CanvasTexture(c);
+  }
+  const DOT = dotTexture();
+  function pointCloud(n, size) {
+    const pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    const mat = new THREE.PointsMaterial({ size, sizeAttenuation: false, vertexColors: true, map: DOT, transparent: true, alphaTest: 0.3, depthWrite: false });
+    return { pos, col, geo, mat, pts: new THREE.Points(geo, mat) };
+  }
+  const setCol = (arr, i, c, w = 1) => { arr[i * 3] = c.r * w; arr[i * 3 + 1] = c.g * w; arr[i * 3 + 2] = c.b * w; };
+  const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+
+  const figures = [];   // { el, scene, camera, update(t, dt, w, h), visible }
+
+  /* ---------------------------------------------------------------- figure 1: values find their columns */
+  (function heroFigure() {
+    const el = document.getElementById("fig-hero");
+    const ROWS = 16, COLS = 20, N = ROWS * COLS;
+    const cloud = pointCloud(N, 6);
+    const home = new Float32Array(N * 2), away = new Float32Array(N * 2), wrong = new Uint8Array(N);
+    const jump = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      wrong[i] = rand() < 0.2 ? 1 : 0;
+      jump[i * 3] = wrong[i] ? (rand() < 0.5 ? 1 : 2) * (rand() < 0.8 ? 1 : -1) : 0;
+      jump[i * 3 + 1] = rand() - 0.5; jump[i * 3 + 2] = rand() - 0.5;
+    }
+    const scene = new THREE.Scene(); scene.add(cloud.pts);
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
+    let aspect = 1;
+    function layout() {
+      const s = Math.min((aspect * 1.75) / COLS, 1.7 / ROWS);
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        const i = r * COLS + c;
+        home[i * 2] = (c - (COLS - 1) / 2) * s; home[i * 2 + 1] = ((ROWS - 1) / 2 - r) * s;
+        away[i * 2] = home[i * 2] + jump[i * 3] * s + (wrong[i] ? jump[i * 3 + 1] * s * 0.4 : 0);
+        away[i * 2 + 1] = home[i * 2 + 1] + (wrong[i] ? jump[i * 3 + 2] * s * 0.6 : 0);
+      }
+      cloud.mat.size = Math.max(2.5, Math.min(7, s * (el.clientHeight / 2) * 0.42)) * PX;
+    }
+    figures.push({ el, scene, camera, resize(w, h) { aspect = w / h; camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix(); layout(); },
+      update(time) {
+        // 7 s loop: hold messy, glide home, hold clean, fade back
+        const cycle = 7, t = reduceMotion ? 3.5 : (time % cycle);
+        let k = t < 1.5 ? 0 : t < 3.5 ? ease((t - 1.5) / 2) : t < 6 ? 1 : 1 - ease((t - 6) / 1);
+        for (let i = 0; i < N; i++) {
+          const x = away[i * 2] + (home[i * 2] - away[i * 2]) * k, y = away[i * 2 + 1] + (home[i * 2 + 1] - away[i * 2 + 1]) * k;
+          cloud.pos[i * 3] = x; cloud.pos[i * 3 + 1] = y;
+          const c = wrong[i] ? C.flag.clone().lerp(C.green, k) : C.ink.clone().lerp(C.soft, 0.25);
+          setCol(cloud.col, i, c);
+        }
+        cloud.geo.attributes.position.needsUpdate = true; cloud.geo.attributes.color.needsUpdate = true;
+      } });
+  })();
+
+  /* ---------------------------------------------------------------- figure 2: many rows, one Old Boy */
+  (function mergeFigure() {
+    const el = document.getElementById("fig-merge");
+    const HOUSES = ["T", "H", "J", "K", "O"];
+    const people = [], rows = [];
+    for (let p = 0; p < 24; p++) {
+      people.push({ house: pick(HOUSES), conflict: rand() < 0.12 });
+      const n = 1 + (rand() < 0.45 ? 1 : 0) + (rand() < 0.2 ? 1 : 0);
+      for (let k = 0; k < n; k++) rows.push(p);
+    }
+    const CELLS = 8, N = rows.length * CELLS;
+    const cloud = pointCloud(N, 5);
+    const pc = pointCloud(people.length, 12);
+    const scene = new THREE.Scene(); scene.add(cloud.pts); scene.add(pc.pts);
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
+    const from = new Float32Array(N * 2), to = new Float32Array(N * 2), pTo = new Float32Array(people.length * 2);
+    let aspect = 1, start = -1;
+    function layout() {
+      const R = rows.length, colsBlocks = 3, perBlock = Math.ceil(R / colsBlocks);
+      const s = Math.min((aspect * 1.75) / (CELLS * colsBlocks + colsBlocks - 1), 1.5 / perBlock);
+      const totalW = (CELLS * colsBlocks + colsBlocks - 1) * s;
+      rows.forEach((p, r) => {
+        const block = Math.floor(r / perBlock), rr = r % perBlock;
+        for (let c = 0; c < CELLS; c++) {
+          const i = r * CELLS + c;
+          from[i * 2] = -totalW / 2 + (block * (CELLS + 1) + c) * s;
+          from[i * 2 + 1] = ((perBlock - 1) / 2 - rr) * s - 0.05;
+        }
+      });
+      const gridCols = 6, gx = 0, sp = Math.min((aspect * 1.4) / gridCols, 0.3);
+      people.forEach((p, i) => {
+        pTo[i * 2] = gx + ((i % gridCols) - (gridCols - 1) / 2) * sp;
+        pTo[i * 2 + 1] = ((Math.ceil(people.length / gridCols) - 1) / 2 - Math.floor(i / gridCols)) * sp * 0.85 - 0.05;
+      });
+      rows.forEach((p, r) => { for (let c = 0; c < CELLS; c++) { const i = r * CELLS + c; to[i * 2] = pTo[p * 2]; to[i * 2 + 1] = pTo[p * 2 + 1]; } });
+      cloud.mat.size = Math.max(2, Math.min(6, s * (el.clientHeight / 2) * 0.5)) * PX;
+      pc.mat.size = Math.max(8, Math.min(15, sp * (el.clientHeight / 2) * 0.4)) * PX;
+    }
+    const legend = document.getElementById("merge-legend");
+    function setLegend() {
+      const sw = (c, l) => `<span><i style="background:#${c.getHexString()}"></i>${l}</span>`;
+      legend.innerHTML = sw(C.soft, "a row in the register") + sw(C.green, "one Old Boy") + sw(C.flag, "rows disagree: for review");
+    }
+    setLegend();
+    const fig = { el, scene, camera, setLegend,
+      resize(w, h) { aspect = w / h; camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix(); layout(); },
+      update(time) {
+        if (start < 0) start = time;
+        const t = reduceMotion ? 99 : time - start;
+        rows.forEach((p, r) => {
+          const delay = 0.6 + r * 0.035, k = ease(Math.max(0, Math.min(1, (t - delay) / 1.4)));
+          for (let c = 0; c < CELLS; c++) {
+            const i = r * CELLS + c;
+            cloud.pos[i * 3] = from[i * 2] + (to[i * 2] - from[i * 2]) * k;
+            cloud.pos[i * 3 + 1] = from[i * 2 + 1] + (to[i * 2 + 1] - from[i * 2 + 1]) * k;
+            setCol(cloud.col, i, C.soft.clone().lerp(C.card, k * 0.97));
+          }
+        });
+        const kp = ease(Math.max(0, Math.min(1, (t - 1.8) / 0.8)));
+        people.forEach((p, i) => {
+          pc.pos[i * 3] = pTo[i * 2]; pc.pos[i * 3 + 1] = pTo[i * 2 + 1];
+          setCol(pc.col, i, (p.conflict ? C.flag : C.green).clone().lerp(C.card, 1 - kp));
+        });
+        pc.mat.opacity = kp;
+        cloud.geo.attributes.position.needsUpdate = true; cloud.geo.attributes.color.needsUpdate = true;
+        pc.geo.attributes.position.needsUpdate = true; pc.geo.attributes.color.needsUpdate = true;
+      } };
+    figures.push(fig);
+    document.getElementById("replay-merge").addEventListener("click", () => { start = -1; });
+    // start the animation when the figure first comes into view
+    new IntersectionObserver((e) => { if (e.some((x) => x.isIntersecting) && fig.played !== true) { start = -1; fig.played = true; } }, { threshold: 0.5 }).observe(el);
+  })();
+
+  /* ---------------------------------------------------------------- figure 3: the network */
+  (function networkFigure() {
+    const el = document.getElementById("fig-network");
+    const HOUSES = ["T", "H", "J", "K", "O"], HN = { T: "Tata", H: "Hyderabad", J: "Jaipur", K: "Kashmir", O: "Oberoi" };
+    const CITIES = ["Delhi", "Mumbai", "Bangalore", "Dehradun", "Kolkata", "London", "Toronto", "Singapore", "New York", "Sydney", "Jaipur"];
+    const FIELDS = ["Medicine", "Law", "Finance", "Engineering", "the Armed Forces", "Business", "Media", "Academia", "Technology", "Conservation"];
+    const people = [], links = [];
+    for (let f = 0; f < 28; f++) {
+      const house = pick(HOUSES), gens = 1 + Math.floor(rand() * 3);
+      let parents = [], base = 1942 + Math.floor(rand() * 18);
+      for (let g = 0; g < gens; g++) {
+        const sib = 1 + (rand() < 0.4 ? 1 : 0) + (rand() < 0.12 ? 1 : 0), gen = [];
+        for (let s = 0; s < sib; s++) {
+          const p = { id: people.length, house: rand() < 0.75 ? house : pick(HOUSES), batch: Math.min(2025, base + s * (2 + Math.floor(rand() * 4))),
+            city: pick(CITIES), field: pick(FIELDS), mentor: rand() < 0.35 };
+          people.push(p); gen.push(p);
+          if (s > 0) links.push([gen[0].id, p.id, "brother"]);
+          if (parents.length) links.push([pick(parents).id, p.id, "father"]);
+        }
+        parents = gen; base += 26 + Math.floor(rand() * 8);
+      }
+    }
+    while (people.length < 100) people.push({ id: people.length, house: pick(HOUSES), batch: 1945 + Math.floor(rand() * 80), city: pick(CITIES), field: pick(FIELDS), mentor: rand() < 0.35 });
+    for (let i = 0; i < 8; i++) { const a = pick(people), b = pick(people); if (a !== b && Math.abs(a.batch - b.batch) < 12) links.push([a.id, b.id, "marriage"]); }
+
+    // force layout, computed once
+    const g = people.map((p) => { const a = (HOUSES.indexOf(p.house) / 5) * Math.PI * 2 + (rand() - 0.5) * 0.9, r = 0.3 + rand() * 0.5; return [Math.cos(a) * r, Math.sin(a) * r]; });
+    const centers = HOUSES.map((h, i) => [Math.cos((i / 5) * Math.PI * 2) * 0.5, Math.sin((i / 5) * Math.PI * 2) * 0.5]);
+    for (let it = 0; it < 260; it++) {
+      const f = g.map(() => [0, 0]);
+      for (let i = 0; i < people.length; i++) {
+        for (let j = i + 1; j < people.length; j++) {
+          const dx = g[i][0] - g[j][0], dy = g[i][1] - g[j][1], d2 = dx * dx + dy * dy + 0.0004, k = 0.00022 / d2;
+          f[i][0] += dx * k; f[i][1] += dy * k; f[j][0] -= dx * k; f[j][1] -= dy * k;
+        }
+        const c = centers[HOUSES.indexOf(people[i].house)];
+        f[i][0] += (c[0] - g[i][0]) * 0.035; f[i][1] += (c[1] - g[i][1]) * 0.035;
+      }
+      links.forEach(([a, b]) => { const dx = g[b][0] - g[a][0], dy = g[b][1] - g[a][1]; f[a][0] += dx * 0.05; f[a][1] += dy * 0.05; f[b][0] -= dx * 0.05; f[b][1] -= dy * 0.05; });
+      g.forEach((p, i) => { p[0] += Math.max(-0.03, Math.min(0.03, f[i][0])); p[1] += Math.max(-0.03, Math.min(0.03, f[i][1])); });
+    }
+    const xs = g.map((p) => p[0]), ys = g.map((p) => p[1]);
+    const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+    const half = Math.max(Math.max(...xs) - cx, Math.max(...ys) - cy);
+    g.forEach((p) => { p[0] = (p[0] - cx) / half * 0.82; p[1] = (p[1] - cy) / half * 0.78 - 0.04; });
+
+    const pc = pointCloud(people.length, 10);
+    const lp = new Float32Array(links.length * 6), lc = new Float32Array(links.length * 6);
+    const lgeo = new THREE.BufferGeometry();
+    lgeo.setAttribute("position", new THREE.BufferAttribute(lp, 3)); lgeo.setAttribute("color", new THREE.BufferAttribute(lc, 3));
+    const lmat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.6 });
+    const lines = new THREE.LineSegments(lgeo, lmat);
+    const scene = new THREE.Scene(); scene.add(lines); scene.add(pc.pts);
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -10, 10);
+    let aspect = 1, mode = "house", showLinks = true, appear = -1;
+    const target = new Float32Array(people.length * 3);
+
+    function colorOf(p) {
+      if (mode === "decade") { const t = (p.batch - 1940) / 85; return C.house.H.clone().lerp(C.brass, t); }
+      if (mode === "mentor") return p.mentor ? C.green : C.rule;
+      return C.house[p.house];
+    }
+    const legend = document.getElementById("network-legend");
+    function setLegend() {
+      const sw = (c, l) => `<span><i style="background:#${c.getHexString()}"></i>${l}</span>`;
+      legend.innerHTML = mode === "decade" ? sw(C.house.H, "earlier batches") + sw(C.brass, "recent batches")
+        : mode === "mentor" ? sw(C.green, "offered to mentor") + sw(C.rule, "not yet")
+        : HOUSES.map((h) => sw(C.house[h], HN[h])).join("");
+    }
+    function recolor() {
+      people.forEach((p, i) => { const c = colorOf(p); target[i * 3] = c.r; target[i * 3 + 1] = c.g; target[i * 3 + 2] = c.b; });
+      links.forEach(([a, b, kind], k) => { const c = kind === "father" ? C.soft : C.faint; for (let e = 0; e < 2; e++) setCol(lc, k * 2 + e, c); });
+      lgeo.attributes.color.needsUpdate = true; setLegend();
+    }
+    function layout() {
+      const s = Math.min(aspect, 1);
+      people.forEach((p, i) => { pc.pos[i * 3] = g[i][0] * s; pc.pos[i * 3 + 1] = g[i][1]; });
+      links.forEach(([a, b], k) => { lp[k * 6] = pc.pos[a * 3]; lp[k * 6 + 1] = pc.pos[a * 3 + 1]; lp[k * 6 + 3] = pc.pos[b * 3]; lp[k * 6 + 4] = pc.pos[b * 3 + 1]; });
+      pc.geo.attributes.position.needsUpdate = true; lgeo.attributes.position.needsUpdate = true;
+      pc.mat.size = Math.max(6, Math.min(10, el.clientWidth / 52)) * PX;
+    }
+    recolor();
+    figures.push({ el, scene, camera, recolor,
+      resize(w, h) { aspect = w / h; camera.left = -aspect; camera.right = aspect; camera.updateProjectionMatrix(); layout(); },
+      update(time, dt) {
+        if (appear < 0) appear = time;
+        const a = reduceMotion ? 1 : Math.min(1, (time - appear) / 1.2);
+        const k = reduceMotion ? 1 : 1 - Math.pow(0.002, dt);
+        for (let i = 0; i < people.length * 3; i++) pc.col[i] += (target[i] - pc.col[i]) * k;
+        pc.mat.opacity = a;
+        lmat.opacity += ((showLinks ? 0.6 : 0) * a - lmat.opacity) * k;
+        pc.geo.attributes.color.needsUpdate = true;
+      } });
+
+    document.querySelectorAll("[data-color]").forEach((btn) => btn.addEventListener("click", () => {
+      mode = btn.dataset.color;
+      document.querySelectorAll("[data-color]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      recolor();
+    }));
+    const lb = document.getElementById("toggle-links");
+    lb.addEventListener("click", () => { showLinks = !showLinks; lb.setAttribute("aria-pressed", String(showLinks)); });
+
+    // hover / tap
+    const tip = document.getElementById("tooltip");
+    function show(ev) {
+      const r = el.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+      const wx = ((x / r.width) * 2 - 1) * aspect, wy = -((y / r.height) * 2 - 1);
+      let best = -1, bd = Infinity;
+      for (let i = 0; i < people.length; i++) { const dx = pc.pos[i * 3] - wx, dy = pc.pos[i * 3 + 1] - wy, d = dx * dx + dy * dy; if (d < bd) { bd = d; best = i; } }
+      if (best < 0 || Math.sqrt(bd) > 0.06) { tip.style.opacity = 0; return; }
+      const p = people[best];
+      const rel = links.filter(([a, b]) => a === p.id || b === p.id).map(([a, b, kind]) => {
+        const o = people[a === p.id ? b : a];
+        const role = kind === "father" ? (a === p.id ? "Son" : "Father") : kind === "brother" ? "Brother" : "Related by marriage";
+        return `${role}: ${HN[o.house]}, ${o.batch}`;
+      });
+      tip.innerHTML = `<strong>An invented Old Boy</strong><br>${HN[p.house]} House, ${p.batch}<br>${p.field}, ${p.city}` +
+        (p.mentor ? "<br>Has offered to mentor" : "") + (rel.length ? `<br><span style="color:var(--ink-soft)">${rel.slice(0, 3).join("<br>")}</span>` : "");
+      tip.style.left = Math.max(6, Math.min(x + 12, r.width - 230)) + "px"; tip.style.top = Math.max(6, Math.min(y - 8, r.height - 110)) + "px";
+      tip.style.opacity = 1;
+    }
+    el.addEventListener("pointermove", show);
+    el.addEventListener("pointerdown", show);
+    el.addEventListener("pointerleave", () => { tip.style.opacity = 0; });
+  })();
+
+  /* ---------------------------------------------------------------- one canvas, drawn inside each figure's box */
+  function sizeCanvas() { renderer.setSize(window.innerWidth, window.innerHeight); }   // also sets CSS size
+  sizeCanvas();
+  window.addEventListener("resize", sizeCanvas);
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", sizeCanvas);
+  const lastSize = new Map();
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const time = now / 1000, H = window.innerHeight;
+    renderer.setScissor(0, 0, window.innerWidth, H); renderer.clear();
+    for (const f of figures) {
+      const r = f.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > H || r.width < 2) continue;
+      const key = `${Math.round(r.width)}x${Math.round(r.height)}`;
+      if (lastSize.get(f) !== key) { lastSize.set(f, key); f.resize(r.width, r.height); }
+      f.update(time, dt);
+      const bottom = H - r.bottom;
+      renderer.setViewport(r.left, bottom, r.width, r.height);
+      renderer.setScissor(r.left, bottom, r.width, r.height);
+      renderer.render(f.scene, f.camera);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  const recolorAll = () => { readColors(); figures.forEach((f) => { if (f.recolor) f.recolor(); if (f.setLegend) f.setLegend(); }); };
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", recolorAll);
+  new MutationObserver(recolorAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+</body>
+</html>
